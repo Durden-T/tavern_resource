@@ -32,7 +32,10 @@ export const Settings = z.object({
       pattern: z.string().default('[---]'),
     })
     .prefault({}),
-  put_system_injection_after_chat_history: z.boolean().default(false),
+  move_above_dx_to_front: z.boolean().default(false),
+  move_below_dx_to_back: z.boolean().default(false),
+  above_dx_placeholder: z.string().default(''),
+  below_dx_placeholder: z.string().default(''),
   system_depth: z.number().int().min(1).max(9998).default(10),
   on_chat_history: z
     .object({
@@ -48,6 +51,16 @@ export const Settings = z.object({
     })
     .prefault({}),
   stop_string: z.string().default('<|im_end|>').catch('<|im_end|>'),
+}).transform(data => {
+  if ('put_system_injection_after_chat_history' in data) {
+    const legacy = data as typeof data & { put_system_injection_after_chat_history?: boolean };
+    if (legacy.put_system_injection_after_chat_history === true) {
+      data.move_above_dx_to_front = true;
+      data.move_below_dx_to_back = true;
+    }
+    delete legacy.put_system_injection_after_chat_history;
+  }
+  return data;
 });
 
 export const useSettingsStore = defineStore('settings', () => {
