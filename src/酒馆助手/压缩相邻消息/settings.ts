@@ -30,6 +30,7 @@ export const Settings = z
     depth_threshold: z.number().int().min(1).default(10),
     move_system_to_front: z.boolean().default(false),
     move_system_to_back: z.boolean().default(false),
+    convert_system_to_user: z.boolean().default(false),
     above_placeholder: z.string().default(''),
     below_placeholder: z.string().default(''),
     put_system_injection_after_chat_history: z.boolean().optional(),

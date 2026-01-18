@@ -30,6 +30,13 @@
 
       <div class="flex-container flexFlowColumn">
         <div style="display: flex; align-items: center; gap: 8px">
+          <span>首个 user/assistant 之后的 system role 转为 user</span>
+          <input v-model="settings.convert_system_to_user" type="checkbox" style="margin: 0 4px 0 0" />
+        </div>
+      </div>
+
+      <div class="flex-container flexFlowColumn">
+        <div style="display: flex; align-items: center; gap: 8px">
           <span>将 D阈值 及以上的系统深度条目移到 D9999</span>
           <input v-model="settings.move_system_to_front" type="checkbox" style="margin: 0 4px 0 0" />
         </div>

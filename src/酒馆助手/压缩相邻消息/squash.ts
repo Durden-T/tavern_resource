@@ -100,6 +100,18 @@ function seperatePrompts(prompts: Prompt[], seperators: Seperators): Prompt[][] 
   ];
 }
 
+function convertSystemToUserAfterFirstNonSystem(prompts: Prompt[]): void {
+  const firstNonSystemIndex = prompts.findIndex(p => p.role === 'user' || p.role === 'assistant');
+  if (firstNonSystemIndex === -1) {
+    return;
+  }
+  for (let i = firstNonSystemIndex + 1; i < prompts.length; i++) {
+    if (prompts[i].role === 'system') {
+      prompts[i].role = 'user';
+    }
+  }
+}
+
 function rejectEmptyPrompts(prompts: Prompt[]): Prompt[] {
   return prompts.filter(({ content }) => content.trim() !== '');
 }
@@ -145,6 +157,11 @@ function listenEvent(settings: Settings, seperators: Seperators) {
     if (prompt.some(({ content }) => typeof content !== 'string')) {
       // TODO: 支持带图片、多媒体的脚本
       return;
+    }
+
+    if (settings.convert_system_to_user) {
+      // @ts-expect-error 类型正确
+      convertSystemToUserAfterFirstNonSystem(prompt);
     }
 
     // @ts-expect-error 类型正确
