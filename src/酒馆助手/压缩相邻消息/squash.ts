@@ -69,6 +69,12 @@ function seperatePrompts(prompts: Prompt[], seperators: Seperators): Prompt[][] 
     return null;
   }
 
+  const stripSeperatorIds = (str: string): string =>
+    str
+      .replaceAll(seperators.head.id, '')
+      .replaceAll(seperators.deep.id, '')
+      .replaceAll(seperators.tail.id, '');
+
   const split_with_context = (
     splitted_before: [string, string],
     before_index: number,
@@ -88,18 +94,18 @@ function seperatePrompts(prompts: Prompt[], seperators: Seperators): Prompt[][] 
   const splitted_tail = split_with_context(splitted_deep, deep_index, tail_index, seperators.tail.content);
 
   return [
-    [...prompts.slice(0, head_index), { role: prompts[head_index].role, content: splitted_head[0] }],
+    [...prompts.slice(0, head_index), { role: prompts[head_index].role, content: stripSeperatorIds(splitted_head[0]) }],
     [
-      { role: prompts[head_index].role, content: splitted_head[1] },
+      { role: prompts[head_index].role, content: stripSeperatorIds(splitted_head[1]) },
       ...prompts.slice(head_index + 1, deep_index),
-      { role: prompts[deep_index].role, content: splitted_deep[0] },
+      { role: prompts[deep_index].role, content: stripSeperatorIds(splitted_deep[0]) },
     ],
     [
-      { role: prompts[deep_index].role, content: splitted_deep[1] },
+      { role: prompts[deep_index].role, content: stripSeperatorIds(splitted_deep[1]) },
       ...prompts.slice(deep_index + 1, tail_index),
-      { role: prompts[tail_index].role, content: splitted_tail[0] },
+      { role: prompts[tail_index].role, content: stripSeperatorIds(splitted_tail[0]) },
     ],
-    [{ role: prompts[tail_index].role, content: splitted_tail[1] }, ...prompts.slice(tail_index + 1)],
+    [{ role: prompts[tail_index].role, content: stripSeperatorIds(splitted_tail[1]) }, ...prompts.slice(tail_index + 1)],
   ];
 }
 
