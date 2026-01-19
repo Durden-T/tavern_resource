@@ -32,7 +32,7 @@ function injectSeperators(settings: Settings) {
       content: uuidv4(),
     },
     tail: {
-      id: `\xff${settings.name}`,
+      id: `\xff${settings.name}\xff`,
       position: 'in_chat',
       depth: 0,
       role: 'system',
@@ -63,6 +63,9 @@ function seperatePrompts(prompts: Prompt[], seperators: Seperators): Prompt[][] 
   const deep_index = prompts.findIndex(({ content }) => content.includes(seperators.deep.content));
   const tail_index = prompts.findIndex(({ content }) => content.includes(seperators.tail.content));
   if (head_index === -1 || deep_index === -1 || tail_index === -1) {
+    return null;
+  }
+  if (!(head_index < deep_index && deep_index < tail_index)) {
     return null;
   }
 
