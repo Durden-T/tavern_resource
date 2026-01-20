@@ -178,11 +178,6 @@ function listenEvent(settings: Settings, seperators: Seperators) {
       return;
     }
 
-    if (settings.convert_system_to_user) {
-      // @ts-expect-error 类型正确
-      convertSystemToUserAfterFirstNonSystem(prompt);
-    }
-
     // @ts-expect-error 类型正确
     const chunks = seperatePrompts(prompt, seperators);
     if (chunks === null) {
@@ -245,6 +240,10 @@ function listenEvent(settings: Settings, seperators: Seperators) {
     for (const p of result) {
       if (above_placeholder) p.content = p.content.replaceAll(above_placeholder, aboveContent);
       if (below_placeholder) p.content = p.content.replaceAll(below_placeholder, belowContent);
+    }
+
+    if (settings.convert_system_to_user) {
+      convertSystemToUserAfterFirstNonSystem(result);
     }
 
     assignInplace(prompt, result);
